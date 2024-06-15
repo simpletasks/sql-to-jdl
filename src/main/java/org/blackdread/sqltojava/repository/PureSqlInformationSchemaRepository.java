@@ -1,8 +1,13 @@
 package org.blackdread.sqltojava.repository;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.blackdread.sqltojava.pojo.ColumnInformation;
 import org.blackdread.sqltojava.pojo.TableInformation;
 import org.blackdread.sqltojava.pojo.TableRelationInformation;
@@ -15,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -22,7 +28,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@Profile({ "mysql", "mariadb", "postgresql", "oracle" })
+@Profile({ "mysql", "mariadb", "postgresql", "oracle", "sqlserver" })
 public class PureSqlInformationSchemaRepository implements InformationSchemaRepository {
 
     private static final Logger log = LoggerFactory.getLogger(PureSqlInformationSchemaRepository.class);
@@ -79,7 +85,16 @@ public class PureSqlInformationSchemaRepository implements InformationSchemaRepo
             }
             Resource r = resources[0];
             log.info("Found resource " + r.getFilename());
-            return ResourceUtil.readString(r);
+
+            Resource resource = new ClassPathResource("sql/" + r.getFilename());
+            InputStream inputStream = resource.getInputStream();
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+                return reader.lines().collect(Collectors.joining("\n"));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            //            return ResourceUtil.readString(r);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

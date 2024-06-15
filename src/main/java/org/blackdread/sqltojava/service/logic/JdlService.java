@@ -1,5 +1,9 @@
 package org.blackdread.sqltojava.service.logic;
 
+import static org.blackdread.sqltojava.entity.JdlFieldEnum.*;
+
+import java.util.*;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.blackdread.sqltojava.config.ApplicationProperties;
 import org.blackdread.sqltojava.entity.*;
@@ -12,14 +16,6 @@ import org.blackdread.sqltojava.util.SqlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static org.blackdread.sqltojava.entity.JdlFieldEnum.*;
 
 @Service
 public class JdlService {
@@ -57,7 +53,7 @@ public class JdlService {
     }
 
     private boolean isDefaultPrimaryKey(JdlField f) {
-        return !(f.isPrimaryKey() && f.getType().equals(JdlFieldEnum.LONG) && f.getName().equals("id"));
+        return !(f.isPrimaryKey() && f.getType().equals(LONG) && f.getName().equals("id"));
     }
 
     protected Optional<JdlEntity> buildEntity(final Map.Entry<SqlTable, List<SqlColumn>> entry) {
@@ -89,12 +85,12 @@ public class JdlService {
         if (reserved.contains(entityName.toUpperCase())) {
             String msg =
                 "Skipping processing table [" +
-                    entry.getKey().getName() +
-                    "] because " +
-                    " the transformed entity name [" +
-                    entityName +
-                    "] matches with one of the keywords " +
-                    reserved;
+                entry.getKey().getName() +
+                "] because " +
+                " the transformed entity name [" +
+                entityName +
+                "] matches with one of the keywords " +
+                reserved;
             log.error(msg);
             return Optional.empty();
         }
@@ -121,39 +117,47 @@ public class JdlService {
      * @return The field or empty if field is to be ignored
      */
     protected Optional<JdlField> buildField(final SqlColumn column) {
-        final String name;
-        JdlFieldEnum jdlType;
-        final String enumEntityName;
-        final String comment;
-        final boolean isNativeEnum = column.isNativeEnum();
+        String name = "";
+        JdlFieldEnum jdlType = null;
+        String enumEntityName = "";
+        String comment = "";
+        boolean isNativeEnum = column.isNativeEnum();
         String pattern = null;
+        boolean isEnum = false;
 
         if (sqlService.isEnumTable(column.getTable().getName())) return Optional.empty();
 
         if (column.isForeignKey()) {
             // check if table referenced is an enum, otherwise, skip
             final SqlTable tableOfForeignKey = sqlService.getTableOfForeignKey(column);
-            if (!sqlService.isEnumTable(tableOfForeignKey.getName())) {
-                log.info("Skipped field of ({}) as ({}) is not an enum table", column, tableOfForeignKey);
-                return Optional.empty();
+            log.info("Skipped2 field of ({}) as ({}) is not an enum table", column, tableOfForeignKey);
+            //            if (!sqlService.isEnumTable(tableOfForeignKey.getName())) {
+            //                log.info("Skipped field of ({}) as ({}) is not an enum table", column, tableOfForeignKey);
+            //                //                return Optional.empty();
+            //            } else
+            jdlType = sqlJdlTypeService.sqlTypeToJdlType(column.getType());
+            name = SqlUtils.changeToCamelCase(toTitleCase(column.getName()).replace(" ", ""));
+            enumEntityName = null;
+            if (sqlService.isEnumTable(tableOfForeignKey.getName())) {
+                jdlType = ENUM;
+                name = SqlUtils.changeToCamelCase(SqlUtils.removeIdFromEnd(column.getName().replace(" ", "")));
+                enumEntityName = StringUtils.capitalize(SqlUtils.changeToCamelCase(SqlUtils.removeIdFromEnd(tableOfForeignKey.getName())));
+                comment =
+                    column
+                        .getComment()
+                        .map(comment1 -> tableOfForeignKey.getComment().map(c -> comment1 + ". " + c).orElse(comment1))
+                        .orElse(tableOfForeignKey.getComment().orElse(null));
             }
-            jdlType = ENUM;
-            name = SqlUtils.changeToCamelCase(SqlUtils.removeIdFromEnd(column.getName()));
-            enumEntityName = StringUtils.capitalize(SqlUtils.changeToCamelCase(SqlUtils.removeIdFromEnd(tableOfForeignKey.getName())));
-            comment =
-                column
-                    .getComment()
-                    .map(comment1 -> tableOfForeignKey.getComment().map(c -> comment1 + ". " + c).orElse(comment1))
-                    .orElse(tableOfForeignKey.getComment().orElse(null));
         } else {
             if (isNativeEnum) {
                 jdlType = ENUM;
-                name = SqlUtils.changeToCamelCase(column.getName());
+                name = SqlUtils.changeToCamelCase(toTitleCase(column.getName()).replace(" ", ""));
                 // todo name of enumEntityName is not great but never mind
                 enumEntityName = StringUtils.capitalize(SqlUtils.changeToCamelCase(SqlUtils.removeIdFromEnd(column.getName())));
             } else {
                 jdlType = sqlJdlTypeService.sqlTypeToJdlType(column.getType());
-                name = SqlUtils.changeToCamelCase(column.getName());
+                name = SqlUtils.changeToCamelCase(toTitleCase(column.getName()).replace(" ", ""));
+                log.info("column name change sql to jdl format: {}, {}", column.getName(), name);
                 enumEntityName = null;
             }
             if (jdlType == UNSUPPORTED) {
@@ -214,6 +218,26 @@ public class JdlService {
         );
     }
 
+    public static String changeToTitleCase(final String value) {
+        if (value == null || value.isEmpty()) {
+            return value;
+        }
+        return Character.toUpperCase(value.charAt(0)) + value.substring(1).toLowerCase();
+    }
+
+    public static String toTitleCase(String sentence) {
+        if (sentence == null || sentence.isEmpty()) {
+            return sentence;
+        }
+        if (!sentence.contains(" ")) {
+            return sentence;
+        }
+        return Arrays
+            .stream(sentence.split(" "))
+            .map(word -> Character.toUpperCase(word.charAt(0)) + word.substring(1).toLowerCase())
+            .collect(Collectors.joining(" "));
+    }
+
     /**
      * @param column            Column from which to create relation, owner side of the relation
      * @param inverseSideTable  The table referenced by the column of the owner side
@@ -272,11 +296,11 @@ public class JdlService {
             if (ownerEntityName.equals(inverseSideEntityName)) {
                 String msg =
                     "Detected a Self Reference in the table " +
-                        tableName +
-                        ". JHipster JDL currently does not support Reflexive relationships. " +
-                        "Set [nullable] as [true] for column [" +
-                        columnName +
-                        "] to fix errors when using the JDL with JHipster";
+                    tableName +
+                    ". JHipster JDL currently does not support Reflexive relationships. " +
+                    "Set [nullable] as [true] for column [" +
+                    columnName +
+                    "] to fix errors when using the JDL with JHipster";
                 log.warn(msg);
                 required = false;
             }
@@ -322,8 +346,8 @@ public class JdlService {
             .stream()
             .anyMatch(jdlRelation ->
                 ownerEntityName.equals(jdlRelation.getOwnerEntityName()) &&
-                    possibleRelationName.equals(jdlRelation.getInverseSideRelationName().orElse(null)) &&
-                    inverseSideEntityName.equals(jdlRelation.getInverseSideEntityName())
+                possibleRelationName.equals(jdlRelation.getInverseSideRelationName().orElse(null)) &&
+                inverseSideEntityName.equals(jdlRelation.getInverseSideEntityName())
             );
 
         if (relationAlreadyExist) {

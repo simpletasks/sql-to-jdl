@@ -1,20 +1,20 @@
 package org.blackdread.sqltojava.util;
 
-import com.google.common.base.CaseFormat;
-import org.apache.commons.lang3.StringUtils;
-import org.blackdread.sqltojava.entity.SqlColumn;
-import org.blackdread.sqltojava.entity.SqlTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.google.common.base.CaseFormat.LOWER_CAMEL;
 
+import com.google.common.base.CaseFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static com.google.common.base.CaseFormat.LOWER_CAMEL;
+import java.util.stream.Stream;
+import org.apache.commons.lang3.StringUtils;
+import org.blackdread.sqltojava.entity.SqlColumn;
+import org.blackdread.sqltojava.entity.SqlTable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class SqlUtils {
 
@@ -22,8 +22,7 @@ public final class SqlUtils {
 
     private static final Pattern COLUMN_TYPE_SIZE_REGEX = Pattern.compile("(^[a-z0-9\\s]+)\\(([0-9]+)\\)$", Pattern.CASE_INSENSITIVE);
 
-    private SqlUtils() {
-    }
+    private SqlUtils() {}
 
     /**
      * @param value A string that might ends with "_id" or "Id"
@@ -36,7 +35,37 @@ public final class SqlUtils {
     }
 
     public static String changeToCamelCase(final String value) {
-        return CaseFormat.LOWER_UNDERSCORE.to(LOWER_CAMEL, value);
+        if (value.contains("_")) {
+            return CaseFormat.LOWER_UNDERSCORE.to(LOWER_CAMEL, value);
+        } else if (value.equals(value.toUpperCase())) {
+            // If the string is in all uppercase, convert it to lowercase
+            return value.toLowerCase();
+        } else {
+            // If the string contains uppercase letters in the middle, split the string into words
+            // based on the uppercase letters, then join the words with the first word in lowercase
+            // and the rest of the words in their original case
+            String[] words = value.split("(?=[A-Z])");
+            String res = Stream.of(words).map(word -> word.equals(words[0]) ? word.toLowerCase() : word).collect(Collectors.joining());
+            return changeIdToLowerCase(res).replace("ID", "Id");
+            //            return Stream
+            //                .of(words)
+            //                .map(word ->
+            //                    word.equals(words[0])
+            //                        ? word.toLowerCase()
+            //                        : word.equals("ID") ? word : Character.toLowerCase(word.charAt(0)) + word.substring(1)
+            //                )
+            //                .collect(Collectors.joining());
+        }
+    }
+
+    public static String changeIdToLowerCase(final String value) {
+        if (value == null || value.isEmpty()) {
+            return value;
+        }
+        if (value.startsWith("iD") && Character.isUpperCase(value.charAt(2))) {
+            return "id" + value.substring(2);
+        }
+        return value;
     }
 
     public static Map<SqlTable, List<SqlColumn>> groupColumnsByTable(final List<SqlColumn> sqlColumns) {

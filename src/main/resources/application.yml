@@ -1,9 +1,9 @@
 spring:
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:mysql://localhost:3306/?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
-        username: root
-        password:
+        url: jdbc:sqlserver://135.181.36.68:1433;database=gospodarski2023;encrypt=true;trustServerCertificate=true
+        username: krunoslav
+        password: magazin
         hikari:
             data-source-properties:
                 cachePrepStmts: true
@@ -15,8 +15,8 @@ spring:
 
 application:
     reserved-keywords: classpath:reserved/keywords.json
-    database-to-export: my_database_name
-    database_object_types_config: TABLES # TABLES, ViEWS, ALL
+    database-to-export: dbo
+    database_object_types_config: ALL # TABLES, ViEWS, ALL
     render_entities_only: false
     assume_bidirectional: true
     database-object-prefix:

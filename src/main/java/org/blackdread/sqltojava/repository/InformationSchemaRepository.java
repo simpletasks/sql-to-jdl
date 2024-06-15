@@ -4,6 +4,7 @@ import java.util.List;
 import org.blackdread.sqltojava.pojo.ColumnInformation;
 import org.blackdread.sqltojava.pojo.TableInformation;
 import org.blackdread.sqltojava.pojo.TableRelationInformation;
+import org.springframework.stereotype.Repository;
 
 public interface InformationSchemaRepository {
     List<TableRelationInformation> getAllTableRelationInformation(final String dbName);

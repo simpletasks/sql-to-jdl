@@ -49,7 +49,7 @@ public abstract class BaseJdbcContainerTest implements LoggingTest, EnvironmentT
      */
     private static String getDefaultSchema(JdbcDatabaseContainer c) throws IllegalArgumentException {
         //TODO use Pattern matching for switch when out of preview
-        if (c instanceof MySQLContainer || c instanceof MariaDBContainer ) {
+        if (c instanceof MySQLContainer || c instanceof MariaDBContainer) {
             return "test";
         } else if (c instanceof OracleContainer) {
             return "TEST";
