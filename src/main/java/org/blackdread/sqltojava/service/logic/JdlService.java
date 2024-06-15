@@ -128,26 +128,7 @@ public class JdlService {
         if (sqlService.isEnumTable(column.getTable().getName())) return Optional.empty();
 
         if (column.isForeignKey()) {
-            // check if table referenced is an enum, otherwise, skip
-            final SqlTable tableOfForeignKey = sqlService.getTableOfForeignKey(column);
-            log.info("Skipped2 field of ({}) as ({}) is not an enum table", column, tableOfForeignKey);
-            //            if (!sqlService.isEnumTable(tableOfForeignKey.getName())) {
-            //                log.info("Skipped field of ({}) as ({}) is not an enum table", column, tableOfForeignKey);
-            //                //                return Optional.empty();
-            //            } else
-            jdlType = sqlJdlTypeService.sqlTypeToJdlType(column.getType());
-            name = SqlUtils.changeToCamelCase(toTitleCase(column.getName()).replace(" ", ""));
-            enumEntityName = null;
-            if (sqlService.isEnumTable(tableOfForeignKey.getName())) {
-                jdlType = ENUM;
-                name = SqlUtils.changeToCamelCase(SqlUtils.removeIdFromEnd(column.getName().replace(" ", "")));
-                enumEntityName = StringUtils.capitalize(SqlUtils.changeToCamelCase(SqlUtils.removeIdFromEnd(tableOfForeignKey.getName())));
-                comment =
-                    column
-                        .getComment()
-                        .map(comment1 -> tableOfForeignKey.getComment().map(c -> comment1 + ". " + c).orElse(comment1))
-                        .orElse(tableOfForeignKey.getComment().orElse(null));
-            }
+            return Optional.empty();
         } else {
             if (isNativeEnum) {
                 jdlType = ENUM;
@@ -156,7 +137,10 @@ public class JdlService {
                 enumEntityName = StringUtils.capitalize(SqlUtils.changeToCamelCase(SqlUtils.removeIdFromEnd(column.getName())));
             } else {
                 jdlType = sqlJdlTypeService.sqlTypeToJdlType(column.getType());
-                name = SqlUtils.changeToCamelCase(toTitleCase(column.getName()).replace(" ", ""));
+                name =
+                    SqlUtils.changeToCamelCase(
+                        replaceSlavenChars(toTitleCase(column.getName()))
+                    );
                 log.info("column name change sql to jdl format: {}, {}", column.getName(), name);
                 enumEntityName = null;
             }
@@ -216,6 +200,22 @@ public class JdlService {
                 column.isPrimaryKey()
             )
         );
+    }
+
+    private static String replaceSlavenChars(String columnName) {
+        return columnName
+            .replace(" ", "")
+            .replace("š", "s")
+            .replace("č", "c")
+            .replace("ž", "z")
+            .replace("ć", "c")
+            .replace("đ", "d")
+            .replace(" ", "")
+            .replace("Š", "S")
+            .replace("Č", "C")
+            .replace("Ž", "Z")
+            .replace("Ć", "C")
+            .replace("Đ", "D");
     }
 
     public static String changeToTitleCase(final String value) {

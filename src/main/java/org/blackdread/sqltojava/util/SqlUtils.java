@@ -47,15 +47,7 @@ public final class SqlUtils {
             String[] words = value.split("(?=[A-Z])");
             String res = Stream.of(words).map(word -> word.equals(words[0]) ? word.toLowerCase() : word).collect(Collectors.joining());
             return changeIdToLowerCase(res).replace("ID", "Id");
-            //            return Stream
-            //                .of(words)
-            //                .map(word ->
-            //                    word.equals(words[0])
-            //                        ? word.toLowerCase()
-            //                        : word.equals("ID") ? word : Character.toLowerCase(word.charAt(0)) + word.substring(1)
-            //                )
-            //                .collect(Collectors.joining());
-        }
+         }
     }
 
     public static String changeIdToLowerCase(final String value) {
