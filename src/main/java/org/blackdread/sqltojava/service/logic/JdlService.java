@@ -137,10 +137,7 @@ public class JdlService {
                 enumEntityName = StringUtils.capitalize(SqlUtils.changeToCamelCase(SqlUtils.removeIdFromEnd(column.getName())));
             } else {
                 jdlType = sqlJdlTypeService.sqlTypeToJdlType(column.getType());
-                name =
-                    SqlUtils.changeToCamelCase(
-                        replaceSlavenChars(toTitleCase(column.getName()))
-                    );
+                name = SqlUtils.changeToCamelCase(replaceSlavenChars(toTitleCase(column.getName())));
                 log.info("column name change sql to jdl format: {}, {}", column.getName(), name);
                 enumEntityName = null;
             }

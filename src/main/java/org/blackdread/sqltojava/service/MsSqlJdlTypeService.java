@@ -5,7 +5,6 @@ import static org.blackdread.sqltojava.entity.JdlFieldEnum.*;
 import static org.blackdread.sqltojava.entity.JdlFieldEnum.UUID;
 
 import java.util.Map;
-
 import org.blackdread.sqltojava.config.ApplicationProperties;
 import org.blackdread.sqltojava.entity.JdlFieldEnum;
 import org.slf4j.Logger;
