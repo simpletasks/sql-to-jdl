@@ -11,6 +11,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.blackdread.sqltojava.config.ApplicationProperties;
 import org.blackdread.sqltojava.entity.JdlEntity;
 import org.blackdread.sqltojava.util.JdlUtils;
@@ -41,9 +42,16 @@ public class ExportService {
      * @return
      */
     public String exportString(final List<JdlEntity> entities) {
+        List<JdlEntity> tables = entities.stream().filter(e -> !e.isReadOnly()).toList();
+        List<JdlEntity> views = entities.stream().filter(JdlEntity::isReadOnly).toList();
+
         Map<String, Object> context = ofEntries(
-            entry("entities", entities),
-            entry("relations", jdlService.getRelations(entities)),
+            entry("entities", tables),
+            entry("onetoonerelations", jdlService.getOneToOneRelations(tables)),
+            entry("manytoonerelations", jdlService.getManyToOneRelations(tables)),
+            entry("manytomanyrelations", jdlService.getManyToManyRelations(tables)),
+            entry("views", views),
+            entry("viewrelations", jdlService.getRelations(views)),
             entry("options", !properties.isRenderEntitiesOnly() ? JdlUtils.getOptions() : Collections.emptyList())
         );
         return mustacheService.executeTemplate("application", context);

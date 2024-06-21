@@ -50,7 +50,7 @@ public class MustacheService {
     }
 
     private String replaceMultpleBlankLinesWithOne(String s) {
-        return s.replaceAll("([ \\t]*\\n){3,}", "\\\n\\\n").replaceAll("\\n\\n$", "\\\n");
+        return s.replaceAll("([ \\tw]*\\n){3,}", "\\\n\\\n").replaceAll("\\n\\n$", "\\\n");
     }
 
     /**

@@ -52,8 +52,36 @@ public class JdlService {
         return entities.stream().flatMap(e -> e.getRelations().stream()).collect(Collectors.toList());
     }
 
+    public List<JdlRelation> getOneToOneRelations(List<JdlEntity> entities) {
+        return entities
+            .stream()
+            .flatMap(e -> e.getRelations().stream())
+            .filter(f -> RelationType.OneToOne.equals(f.getRelationType()))
+            .collect(Collectors.toList());
+    }
+
+    public List<JdlRelation> getManyToOneRelations(List<JdlEntity> entities) {
+        return entities
+            .stream()
+            .flatMap(e -> e.getRelations().stream())
+            .filter(f -> RelationType.ManyToOne.equals(f.getRelationType()))
+            .collect(Collectors.toList());
+    }
+
+    public List<JdlRelation> getManyToManyRelations(List<JdlEntity> entities) {
+        return entities
+            .stream()
+            .flatMap(e -> e.getRelations().stream())
+            .filter(e -> RelationType.ManyToMany.equals(e.getRelationType()))
+            .collect(Collectors.toList());
+    }
+
+    private boolean nonDefaultPrimaryKeyFields(final JdlField f) {
+        return !isDefaultPrimaryKey(f);
+    }
+
     private boolean isDefaultPrimaryKey(JdlField f) {
-        return !(f.isPrimaryKey() && f.getType().equals(LONG) && f.getName().equals("id"));
+        return f.isPrimaryKey() && f.getType().equals(LONG) && f.getName().equals("id");
     }
 
     protected Optional<JdlEntity> buildEntity(final Map.Entry<SqlTable, List<SqlColumn>> entry) {
@@ -63,7 +91,7 @@ public class JdlService {
             .map(this::buildField)
             .filter(Optional::isPresent)
             .map(Optional::get)
-            .filter(this::isDefaultPrimaryKey)
+            .filter(this::nonDefaultPrimaryKeyFields)
             .collect(Collectors.toList());
 
         final List<JdlRelation> existingRelations = new ArrayList<>();
