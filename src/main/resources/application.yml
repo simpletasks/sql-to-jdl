@@ -43,3 +43,5 @@ application:
     export:
         path: ./my-project-jdl.jh
         type: jdl
+        export-file-structure-type: GROUPED_RELATIONS_SEPARATE_VIEWS
+        export-mustache-template-filename-optional:

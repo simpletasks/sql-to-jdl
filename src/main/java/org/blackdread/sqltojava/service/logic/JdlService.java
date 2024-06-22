@@ -9,6 +9,7 @@ import org.blackdread.sqltojava.config.ApplicationProperties;
 import org.blackdread.sqltojava.entity.*;
 import org.blackdread.sqltojava.entity.impl.JdlEntityImpl;
 import org.blackdread.sqltojava.entity.impl.JdlFieldImpl;
+import org.blackdread.sqltojava.entity.impl.JdlRelationGroupImpl;
 import org.blackdread.sqltojava.entity.impl.JdlRelationImpl;
 import org.blackdread.sqltojava.service.SqlJdlTypeService;
 import org.blackdread.sqltojava.util.JdlUtils;
@@ -66,6 +67,26 @@ public class JdlService {
             .flatMap(e -> e.getRelations().stream())
             .filter(f -> RelationType.ManyToOne.equals(f.getRelationType()))
             .collect(Collectors.toList());
+    }
+
+    public JdlRelationGroupImpl getGroupManyToOneRelations(List<JdlEntity> entities) {
+        List<JdlRelation> idRelations = entities
+            .stream()
+            .flatMap(e -> e.getRelations().stream())
+            .filter(f -> RelationType.ManyToOne.equals(f.getRelationType()))
+            .collect(Collectors.toList());
+
+        return new JdlRelationGroupImpl(RelationType.ManyToOne, idRelations);
+    }
+
+    public JdlRelationGroupImpl getGroupOneToOneRelations(List<JdlEntity> entities) {
+        List<JdlRelation> idRelations = entities
+            .stream()
+            .flatMap(e -> e.getRelations().stream())
+            .filter(f -> RelationType.OneToOne.equals(f.getRelationType()))
+            .collect(Collectors.toList());
+
+        return new JdlRelationGroupImpl(RelationType.OneToOne, idRelations);
     }
 
     public List<JdlRelation> getManyToManyRelations(List<JdlEntity> entities) {
