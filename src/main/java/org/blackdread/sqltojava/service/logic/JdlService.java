@@ -176,7 +176,20 @@ public class JdlService {
         if (sqlService.isEnumTable(column.getTable().getName())) return Optional.empty();
 
         if (column.isForeignKey()) {
-            return Optional.empty();
+            // check if table referenced is an enum, otherwise, skip
+            final SqlTable tableOfForeignKey = sqlService.getTableOfForeignKey(column);
+            if (!sqlService.isEnumTable(tableOfForeignKey.getName())) {
+                log.info("Skipped field of ({}) as ({}) is not an enum table", column, tableOfForeignKey);
+                return Optional.empty();
+            }
+            jdlType = ENUM;
+            name = SqlUtils.changeToCamelCase(SqlUtils.removeIdFromEnd(column.getName()));
+            enumEntityName = StringUtils.capitalize(SqlUtils.changeToCamelCase(SqlUtils.removeIdFromEnd(tableOfForeignKey.getName())));
+            comment =
+                column
+                    .getComment()
+                    .map(comment1 -> tableOfForeignKey.getComment().map(c -> comment1 + ". " + c).orElse(comment1))
+                    .orElse(tableOfForeignKey.getComment().orElse(null));
         } else {
             if (isNativeEnum) {
                 jdlType = ENUM;
