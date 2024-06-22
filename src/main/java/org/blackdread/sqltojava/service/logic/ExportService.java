@@ -42,7 +42,6 @@ public class ExportService {
 
     /**
      * Exports jdl to string using mustache.java
-     *
      * @param entities
      * @return
      */
@@ -98,7 +97,6 @@ public class ExportService {
 
     /**
      * Exports jdl to file defined with export.path
-     *
      * @param entities
      * @return
      */
