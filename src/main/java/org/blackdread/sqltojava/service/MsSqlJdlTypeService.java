@@ -30,20 +30,20 @@ public class MsSqlJdlTypeService implements SqlJdlTypeService {
         entry("time", TIME_AS_TEXT),
         entry("datetime", ZONED_DATE_TIME),
         entry("datetime2", ZONED_DATE_TIME),
-        entry("smalldatetime", ZONED_DATE_TIME), // Added conversion for smalldatetime
+        entry("smalldatetime", ZONED_DATE_TIME),
         entry("real", FLOAT),
         entry("float", DOUBLE),
         entry("smallint", INTEGER),
         entry("int", INTEGER),
         entry("bigint", LONG),
-        entry("tinyint", INTEGER), // Added conversion for tinyint
+        entry("tinyint", INTEGER),
         entry("money", BIG_DECIMAL),
         entry("numeric", BIG_DECIMAL),
-        entry("decimal", BIG_DECIMAL), // Added conversion for decimal
+        entry("decimal", BIG_DECIMAL),
         entry("char", STRING),
         entry("varchar", STRING),
-        entry("nvarchar", STRING), // Added conversion for nvarchar
-        entry("nchar", STRING), // Added conversion for nchar
+        entry("nvarchar", STRING),
+        entry("nchar", STRING),
         entry("text", STRING_UNBOUNDED),
         entry("ntext", STRING_UNBOUNDED), // Added conversion for ntext (deprecated sql server type)
         entry("binary", BLOB),
