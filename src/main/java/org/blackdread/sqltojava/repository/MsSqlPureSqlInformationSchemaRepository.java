@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import org.blackdread.sqltojava.pojo.ColumnInformation;
 import org.blackdread.sqltojava.pojo.TableInformation;
 import org.blackdread.sqltojava.pojo.TableRelationInformation;
-import org.blackdread.sqltojava.pojo.rowmaper.ColumnInformationRowMapper;
+import org.blackdread.sqltojava.pojo.rowmaper.SqlServerColumnInformationRowMapper;
 import org.blackdread.sqltojava.pojo.rowmaper.TableInformationRowMapper;
 import org.blackdread.sqltojava.pojo.rowmaper.TableRelationInformationRowMapper;
 import org.slf4j.Logger;
@@ -55,7 +55,7 @@ public class MsSqlPureSqlInformationSchemaRepository implements InformationSchem
     @Override
     public List<ColumnInformation> getFullColumnInformationOfTable(final String schemaName, final String tableName) {
         Map<String, ?> paramMap = Map.of("schemaName", schemaName, "tableName", tableName);
-        return template.queryForStream(FULL_COLUMN_INFORMATION_OF_TABLE, paramMap, new ColumnInformationRowMapper()).toList();
+        return template.queryForStream(FULL_COLUMN_INFORMATION_OF_TABLE, paramMap, new SqlServerColumnInformationRowMapper()).toList();
     }
 
     public List<TableInformation> getAllTableInformation(final String schemaName) {
