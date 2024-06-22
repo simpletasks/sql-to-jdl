@@ -166,11 +166,11 @@ public class JdlService {
      * @return The field or empty if field is to be ignored
      */
     protected Optional<JdlField> buildField(final SqlColumn column) {
-        String name;
+        final String name;
         JdlFieldEnum jdlType;
-        String enumEntityName;
-        String comment;
-        boolean isNativeEnum = column.isNativeEnum();
+        final String enumEntityName;
+        final String comment;
+        final boolean isNativeEnum = column.isNativeEnum();
         String pattern = null;
 
         if (sqlService.isEnumTable(column.getTable().getName())) return Optional.empty();
