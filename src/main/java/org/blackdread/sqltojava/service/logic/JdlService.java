@@ -1,6 +1,7 @@
 package org.blackdread.sqltojava.service.logic;
 
 import static org.blackdread.sqltojava.entity.JdlFieldEnum.*;
+import static org.blackdread.sqltojava.util.NamingConventionUtil.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -195,12 +196,12 @@ public class JdlService {
         } else {
             if (isNativeEnum) {
                 jdlType = ENUM;
-                name = SqlUtils.changeToCamelCase(NamingConventionUtil.toTitleCase(column.getName()).replace(" ", ""));
+                name = SqlUtils.changeToCamelCase(toTitleCase(column.getName()).replace(" ", ""));
                 // todo name of enumEntityName is not great but never mind
                 enumEntityName = StringUtils.capitalize(SqlUtils.changeToCamelCase(SqlUtils.removeIdFromEnd(column.getName())));
             } else {
                 jdlType = sqlJdlTypeService.sqlTypeToJdlType(column.getType());
-                name = SqlUtils.changeToCamelCase(NamingConventionUtil.replaceSlavenChars(NamingConventionUtil.toTitleCase(column.getName())));
+                name = SqlUtils.changeToCamelCase(replaceSlavenChars(toTitleCase(column.getName())));
                 log.info("column name change sql to jdl format: {}, {}", column.getName(), name);
                 enumEntityName = null;
             }
