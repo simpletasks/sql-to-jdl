@@ -12,7 +12,7 @@ import org.blackdread.sqltojava.pojo.ColumnInformation;
 import org.blackdread.sqltojava.pojo.TableInformation;
 import org.blackdread.sqltojava.pojo.TableRelationInformation;
 import org.blackdread.sqltojava.pojo.rowmaper.SqlServerColumnInformationRowMapper;
-import org.blackdread.sqltojava.pojo.rowmaper.TableInformationRowMapper;
+import org.blackdread.sqltojava.pojo.rowmaper.SqlServerTableInformationRowMapper;
 import org.blackdread.sqltojava.pojo.rowmaper.TableRelationInformationRowMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +34,7 @@ public class MsSqlPureSqlInformationSchemaRepository implements InformationSchem
     private static String ALL_TABLE_RELATIONAL_INFROMATION;
     private static String FULL_COLUMN_INFORMATION_OF_TABLE;
     private static String ALL_TABLE_INFORMATION;
-    private static final TableInformationRowMapper TABLE_INFORMATION_MAPPER = new TableInformationRowMapper();
+    private static final SqlServerTableInformationRowMapper TABLE_INFORMATION_MAPPER = new SqlServerTableInformationRowMapper();
     private final NamedParameterJdbcTemplate template;
 
     @Autowired
