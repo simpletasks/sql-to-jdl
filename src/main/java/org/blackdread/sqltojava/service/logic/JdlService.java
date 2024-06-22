@@ -4,6 +4,7 @@ import static org.blackdread.sqltojava.entity.JdlFieldEnum.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.blackdread.sqltojava.config.ApplicationProperties;
 import org.blackdread.sqltojava.entity.*;
@@ -13,6 +14,7 @@ import org.blackdread.sqltojava.entity.impl.JdlRelationGroupImpl;
 import org.blackdread.sqltojava.entity.impl.JdlRelationImpl;
 import org.blackdread.sqltojava.service.SqlJdlTypeService;
 import org.blackdread.sqltojava.util.JdlUtils;
+import org.blackdread.sqltojava.util.NamingConventionUtil;
 import org.blackdread.sqltojava.util.SqlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,12 +136,12 @@ public class JdlService {
         if (reserved.contains(entityName.toUpperCase())) {
             String msg =
                 "Skipping processing table [" +
-                entry.getKey().getName() +
-                "] because " +
-                " the transformed entity name [" +
-                entityName +
-                "] matches with one of the keywords " +
-                reserved;
+                    entry.getKey().getName() +
+                    "] because " +
+                    " the transformed entity name [" +
+                    entityName +
+                    "] matches with one of the keywords " +
+                    reserved;
             log.error(msg);
             return Optional.empty();
         }
@@ -193,12 +195,12 @@ public class JdlService {
         } else {
             if (isNativeEnum) {
                 jdlType = ENUM;
-                name = SqlUtils.changeToCamelCase(toTitleCase(column.getName()).replace(" ", ""));
+                name = SqlUtils.changeToCamelCase(NamingConventionUtil.toTitleCase(column.getName()).replace(" ", ""));
                 // todo name of enumEntityName is not great but never mind
                 enumEntityName = StringUtils.capitalize(SqlUtils.changeToCamelCase(SqlUtils.removeIdFromEnd(column.getName())));
             } else {
                 jdlType = sqlJdlTypeService.sqlTypeToJdlType(column.getType());
-                name = SqlUtils.changeToCamelCase(replaceSlavenChars(toTitleCase(column.getName())));
+                name = SqlUtils.changeToCamelCase(NamingConventionUtil.replaceSlavenChars(NamingConventionUtil.toTitleCase(column.getName())));
                 log.info("column name change sql to jdl format: {}, {}", column.getName(), name);
                 enumEntityName = null;
             }
@@ -260,42 +262,6 @@ public class JdlService {
         );
     }
 
-    private static String replaceSlavenChars(String columnName) {
-        return columnName
-            .replace(" ", "")
-            .replace("š", "s")
-            .replace("č", "c")
-            .replace("ž", "z")
-            .replace("ć", "c")
-            .replace("đ", "d")
-            .replace(" ", "")
-            .replace("Š", "S")
-            .replace("Č", "C")
-            .replace("Ž", "Z")
-            .replace("Ć", "C")
-            .replace("Đ", "D");
-    }
-
-    public static String changeToTitleCase(final String value) {
-        if (value == null || value.isEmpty()) {
-            return value;
-        }
-        return Character.toUpperCase(value.charAt(0)) + value.substring(1).toLowerCase();
-    }
-
-    public static String toTitleCase(String sentence) {
-        if (sentence == null || sentence.isEmpty()) {
-            return sentence;
-        }
-        if (!sentence.contains(" ")) {
-            return sentence;
-        }
-        return Arrays
-            .stream(sentence.split(" "))
-            .map(word -> Character.toUpperCase(word.charAt(0)) + word.substring(1).toLowerCase())
-            .collect(Collectors.joining(" "));
-    }
-
     /**
      * @param column            Column from which to create relation, owner side of the relation
      * @param inverseSideTable  The table referenced by the column of the owner side
@@ -307,7 +273,8 @@ public class JdlService {
         final SqlTable inverseSideTable,
         final List<JdlRelation> existingRelations
     ) {
-        if (!column.isForeignKey()) throw new IllegalArgumentException("Cannot create a relation from a non foreign key");
+        if (!column.isForeignKey())
+            throw new IllegalArgumentException("Cannot create a relation from a non foreign key");
 
         final SqlTable ownerSideTable = column.getTable();
         final String tableName = ownerSideTable.getName();
@@ -354,11 +321,11 @@ public class JdlService {
             if (ownerEntityName.equals(inverseSideEntityName)) {
                 String msg =
                     "Detected a Self Reference in the table " +
-                    tableName +
-                    ". JHipster JDL currently does not support Reflexive relationships. " +
-                    "Set [nullable] as [true] for column [" +
-                    columnName +
-                    "] to fix errors when using the JDL with JHipster";
+                        tableName +
+                        ". JHipster JDL currently does not support Reflexive relationships. " +
+                        "Set [nullable] as [true] for column [" +
+                        columnName +
+                        "] to fix errors when using the JDL with JHipster";
                 log.warn(msg);
                 required = false;
             }
@@ -404,8 +371,8 @@ public class JdlService {
             .stream()
             .anyMatch(jdlRelation ->
                 ownerEntityName.equals(jdlRelation.getOwnerEntityName()) &&
-                possibleRelationName.equals(jdlRelation.getInverseSideRelationName().orElse(null)) &&
-                inverseSideEntityName.equals(jdlRelation.getInverseSideEntityName())
+                    possibleRelationName.equals(jdlRelation.getInverseSideRelationName().orElse(null)) &&
+                    inverseSideEntityName.equals(jdlRelation.getInverseSideEntityName())
             );
 
         if (relationAlreadyExist) {
