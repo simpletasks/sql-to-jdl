@@ -1,9 +1,9 @@
 spring:
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:sqlserver://135.181.36.68:1433;database=gospodarski2023;encrypt=true;trustServerCertificate=true
-        username: krunoslav
-        password: magazin
+        url: jdbc:mysql://localhost:3306/?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=UTC
+        username: root
+        password:
         hikari:
             data-source-properties:
                 cachePrepStmts: true
