@@ -1,18 +1,18 @@
 package org.blackdread.sqltojava.entity.impl;
 
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.annotation.concurrent.Immutable;
+import javax.annotation.concurrent.ThreadSafe;
 import org.blackdread.sqltojava.entity.JdlRelation;
 import org.blackdread.sqltojava.entity.JdlRelationGroup;
 import org.blackdread.sqltojava.entity.RelationType;
 
-import javax.annotation.concurrent.Immutable;
-import javax.annotation.concurrent.ThreadSafe;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Immutable
 @ThreadSafe
 public class JdlRelationGroupImpl implements JdlRelationGroup, Comparable<JdlRelationGroup> {
+
     private final RelationType relationType;
     private final List<JdlRelation> relations;
 
@@ -36,9 +36,13 @@ public class JdlRelationGroupImpl implements JdlRelationGroup, Comparable<JdlRel
 
     @Override
     public String toString() {
-        return "JdlRelationGroupImpl{" +
-            "relationType=" + relationType +
-            ", relations=" + relations.stream().map(e -> e.getOwnerEntityName()).collect(Collectors.joining()) +
-            '}';
+        return (
+            "JdlRelationGroupImpl{" +
+            "relationType=" +
+            relationType +
+            ", relations=" +
+            relations.stream().map(e -> e.getOwnerEntityName()).collect(Collectors.joining()) +
+            '}'
+        );
     }
 }

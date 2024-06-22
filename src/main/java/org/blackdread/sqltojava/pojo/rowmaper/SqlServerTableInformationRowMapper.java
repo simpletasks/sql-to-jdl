@@ -1,10 +1,9 @@
 package org.blackdread.sqltojava.pojo.rowmaper;
 
-import org.blackdread.sqltojava.pojo.TableInformation;
-import org.springframework.jdbc.core.RowMapper;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.blackdread.sqltojava.pojo.TableInformation;
+import org.springframework.jdbc.core.RowMapper;
 
 public class SqlServerTableInformationRowMapper implements RowMapper<TableInformation> {
 

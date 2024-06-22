@@ -5,7 +5,6 @@ import static org.blackdread.sqltojava.util.NamingConventionUtil.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.blackdread.sqltojava.config.ApplicationProperties;
 import org.blackdread.sqltojava.entity.*;
@@ -137,12 +136,12 @@ public class JdlService {
         if (reserved.contains(entityName.toUpperCase())) {
             String msg =
                 "Skipping processing table [" +
-                    entry.getKey().getName() +
-                    "] because " +
-                    " the transformed entity name [" +
-                    entityName +
-                    "] matches with one of the keywords " +
-                    reserved;
+                entry.getKey().getName() +
+                "] because " +
+                " the transformed entity name [" +
+                entityName +
+                "] matches with one of the keywords " +
+                reserved;
             log.error(msg);
             return Optional.empty();
         }
@@ -274,8 +273,7 @@ public class JdlService {
         final SqlTable inverseSideTable,
         final List<JdlRelation> existingRelations
     ) {
-        if (!column.isForeignKey())
-            throw new IllegalArgumentException("Cannot create a relation from a non foreign key");
+        if (!column.isForeignKey()) throw new IllegalArgumentException("Cannot create a relation from a non foreign key");
 
         final SqlTable ownerSideTable = column.getTable();
         final String tableName = ownerSideTable.getName();
@@ -322,11 +320,11 @@ public class JdlService {
             if (ownerEntityName.equals(inverseSideEntityName)) {
                 String msg =
                     "Detected a Self Reference in the table " +
-                        tableName +
-                        ". JHipster JDL currently does not support Reflexive relationships. " +
-                        "Set [nullable] as [true] for column [" +
-                        columnName +
-                        "] to fix errors when using the JDL with JHipster";
+                    tableName +
+                    ". JHipster JDL currently does not support Reflexive relationships. " +
+                    "Set [nullable] as [true] for column [" +
+                    columnName +
+                    "] to fix errors when using the JDL with JHipster";
                 log.warn(msg);
                 required = false;
             }
@@ -372,8 +370,8 @@ public class JdlService {
             .stream()
             .anyMatch(jdlRelation ->
                 ownerEntityName.equals(jdlRelation.getOwnerEntityName()) &&
-                    possibleRelationName.equals(jdlRelation.getInverseSideRelationName().orElse(null)) &&
-                    inverseSideEntityName.equals(jdlRelation.getInverseSideEntityName())
+                possibleRelationName.equals(jdlRelation.getInverseSideRelationName().orElse(null)) &&
+                inverseSideEntityName.equals(jdlRelation.getInverseSideEntityName())
             );
 
         if (relationAlreadyExist) {

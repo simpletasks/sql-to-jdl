@@ -56,7 +56,7 @@ public abstract class BaseJdbcContainerTest implements LoggingTest, EnvironmentT
         } else if (c instanceof PostgreSQLContainer) {
             return "public";
         } else if (c instanceof MSSQLServerContainer) {
-            return "test";
+            return "dbo";
         } else {
             throw new IllegalArgumentException("Unrecognized JdbcDatabaseContainer " + container.getClass());
         }

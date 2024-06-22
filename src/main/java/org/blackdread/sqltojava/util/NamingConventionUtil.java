@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public final class NamingConventionUtil {
+
     public static String replaceSlavenChars(String columnName) {
         return columnName
             .replace(" ", "")

@@ -30,7 +30,7 @@ import org.springframework.stereotype.Repository;
 @Profile({ "sqlserver" })
 public class MsSqlPureSqlInformationSchemaRepository implements InformationSchemaRepository {
 
-    private static final Logger log = LoggerFactory.getLogger(PureSqlInformationSchemaRepository.class);
+    private static final Logger log = LoggerFactory.getLogger(MsSqlPureSqlInformationSchemaRepository.class);
     private static String ALL_TABLE_RELATIONAL_INFROMATION;
     private static String FULL_COLUMN_INFORMATION_OF_TABLE;
     private static String ALL_TABLE_INFORMATION;

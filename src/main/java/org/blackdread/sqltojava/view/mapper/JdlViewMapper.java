@@ -20,5 +20,4 @@ public interface JdlViewMapper {
     JdlFieldViewImpl fieldToView(JdlFieldImpl jdlField);
     JdlRelationViewImpl relationToView(JdlRelationImpl jdlRelation);
     JdlRelationGroupViewImpl relationToView(JdlRelationGroupImpl jdlRelation);
-
 }

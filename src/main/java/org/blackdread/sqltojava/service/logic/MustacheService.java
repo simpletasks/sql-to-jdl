@@ -5,12 +5,10 @@ import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 import com.github.mustachejava.reflect.ReflectionObjectHandler;
 import com.github.mustachejava.util.DecoratedCollection;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Map;
-
 import org.blackdread.sqltojava.config.ApplicationProperties;
 import org.blackdread.sqltojava.entity.impl.JdlEntityImpl;
 import org.blackdread.sqltojava.entity.impl.JdlFieldImpl;

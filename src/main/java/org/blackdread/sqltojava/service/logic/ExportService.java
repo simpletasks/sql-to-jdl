@@ -11,7 +11,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
 import org.blackdread.sqltojava.config.ApplicationProperties;
 import org.blackdread.sqltojava.config.ExportFileStructureType;
 import org.blackdread.sqltojava.entity.JdlEntity;
@@ -33,7 +32,12 @@ public class ExportService {
 
     private final MustacheService mustacheService;
 
-    public ExportService(final ApplicationProperties properties, ExportFileStructureConfig exportFileStructureConfig, JdlService jdlService, MustacheService mustacheService) {
+    public ExportService(
+        final ApplicationProperties properties,
+        ExportFileStructureConfig exportFileStructureConfig,
+        JdlService jdlService,
+        MustacheService mustacheService
+    ) {
         this.properties = properties;
         this.exportFileStructureConfig = exportFileStructureConfig;
         this.jdlService = jdlService;
@@ -46,18 +50,22 @@ public class ExportService {
      * @return
      */
     public String exportString(final List<JdlEntity> entities) {
-        return mustacheService.executeTemplate(exportFileStructureConfig.getExportMustacheTemplateFilename(), resolveExportStructure(entities));
-
+        return mustacheService.executeTemplate(
+            exportFileStructureConfig.getExportMustacheTemplateFilename(),
+            resolveExportStructure(entities)
+        );
     }
 
-    public Map<String, Object> resolveExportStructure (final List<JdlEntity> entities){
+    public Map<String, Object> resolveExportStructure(final List<JdlEntity> entities) {
         if (ExportFileStructureType.SEPARATED.equals(exportFileStructureConfig.getExportFileStructureType())) {
             return ofEntries(
                 entry("entities", entities),
                 entry("relations", jdlService.getRelations(entities)),
                 entry("options", !properties.isRenderEntitiesOnly() ? JdlUtils.getOptions() : Collections.emptyList())
             );
-        } else if (ExportFileStructureType.GROUPED_RELATIONS_SEPARATE_VIEWS.equals(exportFileStructureConfig.getExportFileStructureType())) {
+        } else if (
+            ExportFileStructureType.GROUPED_RELATIONS_SEPARATE_VIEWS.equals(exportFileStructureConfig.getExportFileStructureType())
+        ) {
             List<JdlEntity> tables = extractTables(entities);
             List<JdlEntity> views = extractViews(entities);
 
@@ -70,7 +78,9 @@ public class ExportService {
                 entry("viewrelations", jdlService.getRelations(views)),
                 entry("options", !properties.isRenderEntitiesOnly() ? JdlUtils.getOptions() : Collections.emptyList())
             );
-        } else if (ExportFileStructureType.RELATIONS_BEFORE_VIEWS_SEPARATE_VIEWS.equals(exportFileStructureConfig.getExportFileStructureType())) {
+        } else if (
+            ExportFileStructureType.RELATIONS_BEFORE_VIEWS_SEPARATE_VIEWS.equals(exportFileStructureConfig.getExportFileStructureType())
+        ) {
             List<JdlEntity> tables = extractTables(entities);
             List<JdlEntity> views = extractViews(entities);
 

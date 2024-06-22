@@ -16,7 +16,8 @@ public class ExportFileStructureConfig {
         this.applicationProperties = applicationProperties;
         exportFileStructureType = applicationProperties.getExport().getExportFileStructureType();
         String newTemplateName = applicationProperties.getExport().getExportMustacheTemplateFilenameOptional();
-        exportMustacheTemplateFilename = StringUtils.isBlank(newTemplateName) ? exportFileStructureType.getExportMustacheTemplateFilename() : newTemplateName;
+        exportMustacheTemplateFilename =
+            StringUtils.isBlank(newTemplateName) ? exportFileStructureType.getExportMustacheTemplateFilename() : newTemplateName;
     }
 
     public String getExportMustacheTemplateFilename() {

@@ -5,6 +5,4 @@ import javax.annotation.concurrent.ThreadSafe;
 
 @Immutable
 @ThreadSafe
-public interface JdlRelationGroupView {
-
-}
+public interface JdlRelationGroupView {}

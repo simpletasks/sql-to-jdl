@@ -125,8 +125,13 @@ public class ApplicationProperties {
         private final String type;
         private final ExportFileStructureType exportFileStructureType;
         private final String exportMustacheTemplateFilenameOptional;
-        
-        public Export(final Path path, final String type, ExportFileStructureType exportFileStructureType, String exportMustacheTemplateFilenameOptional) {
+
+        public Export(
+            final Path path,
+            final String type,
+            ExportFileStructureType exportFileStructureType,
+            String exportMustacheTemplateFilenameOptional
+        ) {
             this.path = path;
             this.type = type;
             this.exportFileStructureType = exportFileStructureType;
