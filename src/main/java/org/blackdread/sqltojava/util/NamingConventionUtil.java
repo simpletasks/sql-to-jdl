@@ -20,13 +20,6 @@ public final class NamingConventionUtil {
             .replace("Đ", "D");
     }
 
-//    public static String changeToTitleCase(final String value) {
-//        if (value == null || value.isEmpty()) {
-//            return value;
-//        }
-//        return Character.toUpperCase(value.charAt(0)) + value.substring(1).toLowerCase();
-//    }
-
     public static String toTitleCase(String sentence) {
         if (sentence == null || sentence.isEmpty()) {
             return sentence;

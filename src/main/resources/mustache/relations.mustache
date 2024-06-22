@@ -1,25 +1,25 @@
 {{#relations}}
 {{#first}}// Relations{{/first}}
 {{#value.isPureManyToMany}}
-    // TODO This is a pure ManyToMany relation (delete me and decide owner side)
+// TODO This is a pure ManyToMany relation (delete me and decide owner side)
 {{/value.isPureManyToMany}}
 {{#value.comment}}
-    {{value.implComment}}
+{{value.implComment}}
 {{/value.comment}}
 relationship {{value.type}} {
-{{^value.hasComments}}
+    {{^value.hasComments}}
     {{value.ownerEntityName}}{{value.ownerConfig}} to {{value.inverseSideEntityName}}{{value.inverseConfig}}
-{{/value.hasComments}}
-{{#value.hasComments}}
+    {{/value.hasComments}}
+    {{#value.hasComments}}
     {{#value.ownerDocComment}}
-        {{value.ownerDocComment}}
+    {{value.ownerDocComment}}
     {{/value.ownerDocComment}}
     {{value.ownerEntityName}}{{value.ownerConfig}} to
     {{#value.inverseDocComment}}
-        {{value.inverseDocComment}}
+    {{value.inverseDocComment}}
     {{/value.inverseDocComment}}
     {{value.inverseSideEntityName}}{{value.inverseConfig}}
-{{/value.hasComments}}
+    {{/value.hasComments}}
 }
 {{^last}}{{/last}}
 {{/relations}}
