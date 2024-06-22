@@ -14,7 +14,6 @@ import org.blackdread.sqltojava.entity.impl.JdlRelationGroupImpl;
 import org.blackdread.sqltojava.entity.impl.JdlRelationImpl;
 import org.blackdread.sqltojava.service.SqlJdlTypeService;
 import org.blackdread.sqltojava.util.JdlUtils;
-import org.blackdread.sqltojava.util.NamingConventionUtil;
 import org.blackdread.sqltojava.util.SqlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -218,7 +217,7 @@ public class JdlService {
             // We always define max for string
             case STRING -> {
                 min = null;
-                max = SqlUtils.parseSqlSize(column.getType()).orElse(255);
+                max = sqlJdlTypeService.calculateStringMaxLength(column);
             }
             case TIME_AS_TEXT -> {
                 pattern = "^(([0-1]\\d)|(2[0-3])):([0-5]\\d):([0-5]\\d)$";

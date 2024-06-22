@@ -20,7 +20,7 @@ public final class SqlUtils {
 
     private static final Logger log = LoggerFactory.getLogger(SqlUtils.class);
 
-    private static final Pattern COLUMN_TYPE_SIZE_REGEX = Pattern.compile("(^[a-z0-9\\s]+)\\(([0-9]+)\\)$", Pattern.CASE_INSENSITIVE);
+    public static final Pattern COLUMN_TYPE_SIZE_REGEX = Pattern.compile("(^[a-z0-9\\s]+)(\\((\\-?[0-9]+)\\))?$", Pattern.CASE_INSENSITIVE);
 
     private SqlUtils() {}
 
@@ -69,7 +69,7 @@ public final class SqlUtils {
         final Matcher matcher = COLUMN_TYPE_SIZE_REGEX.matcher(value);
 
         if (matcher.matches()) {
-            return Optional.of(Integer.valueOf(matcher.group(2)));
+            return Optional.of(Integer.valueOf(matcher.group(3)));
         }
         log.warn("Did not find sql size from: {}", value);
         return Optional.empty();
