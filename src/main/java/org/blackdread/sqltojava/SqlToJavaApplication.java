@@ -14,11 +14,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.ComponentScan;
 
 @EnableConfigurationProperties(ApplicationProperties.class)
 @SpringBootApplication
-@ComponentScan({ "com.example", "org.blackdread.sqltojava" })
 public class SqlToJavaApplication implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(SqlToJavaApplication.class);
